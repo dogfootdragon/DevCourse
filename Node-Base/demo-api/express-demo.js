@@ -1,6 +1,9 @@
 const express = require('express')
 const app = express()
 
+// 서버 세팅 : 포트 넘버 1234로 세팅 
+app.listen(1234)
+
 // GET + "/"
 app.get('/', function (req, res) {
   res.send('Hello World')
@@ -16,6 +19,3 @@ app.get('/products/1', function(req, res) {
   res.json(book)
   // res.send(20000)
 })
-
-// 서버 세팅 : 포트 넘버 1234로 세팅 
-app.listen(1234)
