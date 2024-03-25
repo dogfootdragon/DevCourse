@@ -1,5 +1,5 @@
 // express 모듈 세팅
-const express = require("express")
+const express = require("express");
 const app = express();
 app.listen(7777);
 app.use(express.json()); // http외 모듈 json
@@ -10,8 +10,43 @@ var id = 1; // 하나의 객체를 유니크하게 구별하기 위함
 
 // 로그인
 app.post('/login', (req, res) => {
-  
+  console.log(req.body);
+
+  // userId가 db에 저장된 회원인지 확인
+  const {userId, password} = req.body;
+  let loginUser = {};
+
+  db.forEach((user, idx) => {
+    if(user.userId === userId) {
+      loginUser = user;
+    } 
+  })
+
+  // userId값을 못 찾았으면
+  if(isExist(loginUser)) {
+    console.log("아이디같음");
+
+    // password 맞는지 비교
+    if(loginUser.password == password) {
+      console.log("비밀번호 같음");
+    } else {
+      console.log("비밀번호 다름");
+    }
+  } else {
+    console.log("입력하신 아이디는 없는 아이디 입니다.");
+  }
+
+  res.send("테스트중")
 })
+
+// 객체가 채워져있으면 true, 비워져있으면 false return
+function isExist(obj) {
+  if(Object.keys(obj).length) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 // 회원 가입
 app.post('/join', (req, res) => {
@@ -32,7 +67,7 @@ app.post('/join', (req, res) => {
 })
 
 app
-  ._router('/users/:id')
+  .route('/users/:id')
   .get((req, res) => { // 회원 개별 조회
     let {id} = req.params;
     id = parseInt(id);
