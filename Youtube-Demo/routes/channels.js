@@ -5,14 +5,14 @@ const {body, param, validationResult} = require('express-validator');
 
 router.use(express.json());
 
-const validate = (req, res) => {
+const validate = (req, res, next) => {
   const err = validationResult(req)
 
-  if(!err.isEmpty()) {
+  if(err.isEmpty()) {
+    return next(); // 다음 동작으로 넘어감 (현재 콜백함수)
+  } else {
     return res.status(400).json(err.array())
   }
-
-  // 미들웨어로 분리 후 콜백함수 실행이 되지않음. (추후 강의에서 업데이트 예정)
 }
 
 router
@@ -36,21 +36,18 @@ router
             if(results.length)
               res.status(200).json(results);
             else
-              notFoundChannel(res);
+            return res.status(400).end();
           }
         )
   }) 
   .post(
     // validator에게 빈 값이 아니고 int형태인지 유효성 검사를 맡김. withMessage에 메세지를 매개변수로 담음
-    [body('userId').notEmpty().isInt().withMessage('number 입력 필요'),
-     body('name').notEmpty().isString().withMessage('string 입력 필요')]
+    [
+      body('userId').notEmpty().isInt().withMessage('number 입력 필요'),
+      body('name').notEmpty().isString().withMessage('string 입력 필요'),
+      validate
+    ]
     , (req, res) => {
-      const err = validationResult(req); //validator가 제공하는 req에 대한 err값을 받음
-
-      if(!err.isEmpty()) {
-        return res.status(400).json(err.array())
-      }
-
       const {name, userId} = req.body;
 
       let sql = `INSERT INTO channels (name, user_id) VALUES (?,?)`;
@@ -70,14 +67,11 @@ router
 router
   .route('/:id')
   .get(
-    param('id').notEmpty().withMessage('채널 id 필요')
+    [
+      param('id').notEmpty().withMessage('채널 id 필요'),
+      validate
+    ]
     ,(req, res) => { // 채널 개별 조회
-      const err = validationResult(req)
-
-      if(!err.isEmpty()) {
-        return res.status(400).json(err.array())
-      }
-
       let {id} = req.params;
       id = parseInt(id);
 
@@ -92,20 +86,17 @@ router
           if(results.length)
             res.status(200).json(results)
           else
-            notFoundChannel(res);
+          return res.status(400).end();
         }
       )
   }) 
   .put(
-    [param('id').notEmpty().withMessage('채널 id 필요')],
-    [body('name').notEmpty().isString().withMessage('채널명 오류')]
+    [
+      param('id').notEmpty().withMessage('채널 id 필요'),
+      body('name').notEmpty().isString().withMessage('채널명 오류'),
+      validate
+    ]
     ,(req, res) => { // 채널 개별 수정
-      const err = validationResult(req)
-
-      if(!err.isEmpty()) {
-        return res.status(400).json(err.array())
-      }
-
       let {id} = req.params;
       id = parseInt(id);
       let {name} = req.body
@@ -129,14 +120,11 @@ router
       )
   }) 
   .delete(
-    param('id').notEmpty().withMessage('채널 id 필요')
+    [
+      param('id').notEmpty().withMessage('채널 id 필요'),
+      validate
+    ]
     ,(req, res) => { // 채널 개별 삭제
-      const err = validationResult(req)
-
-      if(!err.isEmpty()) {
-        return res.status(400).json(err.array())
-      }
-
       let {id} = req.params;
       id = parseInt(id);
 
@@ -157,10 +145,5 @@ router
       )
   }) 
 
-  function notFoundChannel(res) {
-    res.status(404).json({
-      message : `채널 정보를 찾을 수 없습니다.`
-    })
-  }
 
   module.exports = router;

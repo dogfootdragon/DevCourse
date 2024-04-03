@@ -1,18 +1,39 @@
 const express = require("express");
 const router = express.Router(); // express의 router로 사용할 수 있게 만듦
-
 const conn = require('../mariadb'); // db 모듈 연결
+const {body, param, validationResult} = require('express-validator');
 
 router.use(express.json()); // http외 모듈 json
 
+const validate = (req, res, next) => { //req, res, next 값은 express가 넣어준다
+  const err = validationResult(req)
+
+  if(err.isEmpty()) {
+    return next(); // 다음 동작으로 넘어감 (현재 콜백함수)
+  } else {
+    return res.status(400).json(err.array())
+  }
+}
+
 // 로그인
-router.post('/login', (req, res) => {
-  // email이 db에 저장된 회원인지 확인
+router.post(
+  '/login',
+  [
+    body('email').notEmpty().isEmail().withMessage('이메일 확인 필요'),
+    body('password').notEmpty().isString().withMessage('비밀번호 확인 필요'),
+    validate
+  ],
+   (req, res) => {
   const {email, password} = req.body;
   
   let sql = `SELECT * FROM users WHERE email = ?`;
   conn.query(sql, email,
     function(err, results) { // err, result, fields 순서대로 받음. fields는 생략
+      if(err) {
+        console.log(err)
+        return res.status(400).end();
+      }
+
       let loginUser = results[0]; // result[0]가 없으면 loginUser = undefind
 
       if(loginUser && loginUser.password == password) {
@@ -29,51 +50,76 @@ router.post('/login', (req, res) => {
 })
 
 // 회원 가입
-router.post('/join', (req, res) => {
-  if (req.body == {}) { // 테스트 중에는 req.body값이 아예 비었거나 세 가지 모두 잘 들어온다는 조건하에
-    res.status(400).json({
-      message : `입력 값을 다시 확인해주세요.`
-    })
-  } else {
+router.post(
+  '/join',
+  [
+    body('email').notEmpty().isEmail().withMessage('이메일 확인 필요'),
+    body('name').notEmpty().isString().withMessage('이름 확인 필요'),
+    body('password').notEmpty().isString().withMessage('비밀번호 확인 필요'),
+    body('contact').notEmpty().isString().withMessage('연락처 확인 필요'),
+    validate
+  ]
+  , (req, res) => {
     const {email, name, password, contact} = req.body;
 
     let sql = `INSERT INTO users (email, name, password, contact) VALUES (?,?,?,?)`;
     let values = [email, name, password, contact]; // 쿼리문에 보낼 값이 여러개일때 array사용
     conn.query(sql, values ,
       function(err, results) {
+        if(err) {
+          console.log(err)
+          return res.status(400).end();
+        }
         res.status(201).json({
           message : `${email}님 환영합니다.`
         })
       } 
     )  
-  }
 })
+
 
 router
   .route('/users')
-  .get((req, res) => { // 회원 개별 조회
+  .get( // 회원 개별 조회
+    [
+      body('email').notEmpty().isEmail().withMessage('이메일 확인 필요'),
+      validate
+    ]
+    ,(req, res) => { 
     let {email} = req.body;
   
     let sql = `SELECT * FROM users WHERE email = ?`;
     conn.query(sql, email, // ?에 들어갈 값은 email 변수 값이다라고 지정
       function (err, results, fields) { // result는 json array형태로 받아짐
-        if(results.length) {
-          res.status(200).json(results)
-        } else {
-          res.status(404).json({
-            message : `회원 정보가 없습니다.`
-          })
+        if(err) {
+          console.log(err)
+          return res.status(400).end();
         }
+        res.status(200).json(results)
       }
     )
   })
-  .delete((req, res) => { // 회원 개별 탈퇴
+  .delete( // 회원 개별 탈퇴
+    [
+      body('email').notEmpty().isString().withMessage('비밀번호 확인 필요'),
+      validate
+    ]
+    ,(req, res) => { 
     let {email} = req.body;
   
     let sql = `DELETE FROM users WHERE email = ?`;
     conn.query(sql, email,
       function(err, results, fields) {
-        res.status(200).json(results);
+        if(err) {
+          console.log(err)
+          return res.status(400).end();
+        }
+
+        if(results.affectedRows == 0) {
+          return res.status(400).end();
+        } else {
+          res.status(200).json(results)
+        }
       }
     )
   })
