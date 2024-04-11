@@ -1,5 +1,3 @@
-// 장세림
-
 const conn = require('../mariadb'); // db 모듈
 const {StatusCodes} = require('http-status-codes'); // status code 모듈
 const jwt = require('jsonwebtoken'); // jwt 모듈
