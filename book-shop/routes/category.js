@@ -1,5 +1,3 @@
-// 장세림
-
 const express = require('express');
 const router = express.Router();
 
