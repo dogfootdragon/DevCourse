@@ -1,3 +1,5 @@
+// 장세림
+
 INSERT INTO books (title, form, isbn, summary, detail, author, pages, contents, price, pub_date)
 VALUES ("어린왕자들", "종이책", 0, "어리다..", "많이 어리다..", "김어림", 100, "목차입니다.", 20000, "2019-01-01");
 
@@ -80,3 +82,22 @@ DELETE FROM cartItems WHERE id = ?;
 SELECT * FROM Bookshop.cartItems
 WHERE user_id=1
 AND id IN (1,2);
+
+// 주문하기
+// 배송 정보 입력
+INSERT INTO delivery (address, receiver, contact) VALUES ("서울시 중구", "이요요", "010-0000-0000");
+
+const delivery_id = SELECT max(id) FROM delivery
+
+// 주문 정보 입력
+INSERT INTO orders (book_title, total_quantity, total_price, user_id, delivery_id)
+VALUES ("어린왕자들", 3, 60000, 1, delivery_id);
+
+const order_id = SELECT max(id) FROM orders;
+
+// 주문 상세 목록 입력
+INSERT INTO orderedBook (order_id, book_id, quantity)
+VALUES (1, 1, 1);
+
+// 방금 insert한 데이터 PK 가져오는 방법
+SELECT max(id) FROM orderedBook;
