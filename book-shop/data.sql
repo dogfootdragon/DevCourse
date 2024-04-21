@@ -101,3 +101,6 @@ VALUES (1, 1, 1);
 
 // 방금 insert한 데이터 PK 가져오는 방법
 SELECT max(id) FROM orderedBook;
+
+// 결제된 도서 장바구니 삭제
+DELETE FROM cartItems WHERE id IN (1,2,3);
