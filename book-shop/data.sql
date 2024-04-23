@@ -104,3 +104,9 @@ SELECT max(id) FROM orderedBook;
 
 // 결제된 도서 장바구니 삭제
 DELETE FROM cartItems WHERE id IN (1,2,3);
+
+SELECT * FROM books LIMIT 4 OFFSET 0;
+SELECT count(*) FROM Bookshop.books;
+// or
+SELECT SQL_CALC_FOUND_ROWS * FROM books LIMIT 4 OFFSET 0;
+SELECT found_rows();
