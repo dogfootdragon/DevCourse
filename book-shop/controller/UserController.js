@@ -25,8 +25,11 @@ const join = (req, res) => {
         console.log(err);
         return res.status(StatusCodes.BAD_REQUEST).end();
       }
-
-      return res.status(StatusCodes.CREATED).json(result);
+      
+      if(results.affectedRows)
+        return res.status(StatusCodes.CREATED).json(result);
+      else
+        return res.status(StatusCodes.BAD_GATEWAY).end();
   })
 }
 
