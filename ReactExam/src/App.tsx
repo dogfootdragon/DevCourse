@@ -6,13 +6,18 @@ import ClassCom from './ClassCom';
 import FuncCom from './FuncCom';
 import TodoList from './Todolist';
 import MapTest from './MapTest';
+import MyButton from './CountTest';
+import Clock from './Timer';
+import MyWeather from './MyWeather';
 
 function App() {
   const [count, setCount] = useState(0)
 
   return(
     <div className='container'>
-      <TodoList></TodoList>
+      <TodoList></TodoList> 
+      <MyWeather weather='맑음'>일기예보</MyWeather>
+      {/* <Clock></Clock> */}
       {/* <MapTest></MapTest> */}
     </div>
   )

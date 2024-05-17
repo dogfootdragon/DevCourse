@@ -1,5 +1,5 @@
 #root {
-  max-width: 1280px;
+  max-width: 1600px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
@@ -51,7 +51,7 @@
 }
 
 .container {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
   background-color: #282c34;
@@ -65,4 +65,13 @@
   overflow: hidden;
   color: #282c34;
   padding: 10px;
+}
+
+.delbutton {
+  color: red;
+  background-color: white;
+  border: 1px solid red;
+  border-radius: 5px;
+  font-weight: bold;
+  text-align: center;
 }
