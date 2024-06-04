@@ -26,7 +26,7 @@ const join = (req, res) => {
         return res.status(StatusCodes.BAD_REQUEST).end();
       }
       
-      if(results.affectedRows)
+      if(result.affectedRows)
         return res.status(StatusCodes.CREATED).json(result);
       else
         return res.status(StatusCodes.BAD_GATEWAY).end();

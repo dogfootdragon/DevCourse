@@ -10,6 +10,18 @@ dotenv.config({path: path.resolve(__dirname, '.env')});
 
 app.listen(process.env.PORT);
 
+// cors
+const cors = require("cors");
+const corsOptions = {
+  origin: process.env.CLIENT_ORIGIN || "http://localhost:3602",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
+
 const userRouter = require('./routes/users');
 const bookRouter = require('./routes/books');
 const categoryRouter = require('./routes/category');
