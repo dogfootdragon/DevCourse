@@ -13,7 +13,7 @@ app.listen(process.env.PORT);
 // cors
 const cors = require("cors");
 const corsOptions = {
-  origin: process.env.CLIENT_ORIGIN || "http://localhost:3602",
+  origin: process.env.CLIENT_ORIGIN || "http://localhost:3000",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
