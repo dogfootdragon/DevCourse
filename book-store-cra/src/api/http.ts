@@ -47,13 +47,13 @@ export const requestHandler = async <T>(method: RequestMethod, url: string, payl
       response = await httpClient.post(url, payload);
       break;
     case 'get':
-      response = await httpClient.post(url);
+      response = await httpClient.get(url);
       break;
     case 'put':
-      response = await httpClient.post(url, payload);
+      response = await httpClient.put(url, payload);
       break;
     case 'delete':
-      response = await httpClient.post(url);
+      response = await httpClient.delete(url);
       break;
   }
 
