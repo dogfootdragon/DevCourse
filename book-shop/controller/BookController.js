@@ -33,9 +33,9 @@ const allBooks = (req, res) => {
   conn.query(sql, values, (err, results) => {
     if(err) {
       console.log(err);
-      // return res.status(StatusCodes.BAD_REQUEST).end();
+      return res.status(StatusCodes.BAD_REQUEST).end();
     } 
-    console.log(results);
+    // console.log(results);
     if(results.length) {
       results.map((result)=>{
         result.pubDate = result.pub_date;

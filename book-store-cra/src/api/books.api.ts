@@ -17,8 +17,8 @@ interface FetchBooksResponse {
 export const fetchBooks = async (params: FetchBooksParams) => {
   try {
     const reponse = await httpClient.get<FetchBooksResponse>("/books", {
-    params: params
-    })
+      params: params,
+    });
 
     return reponse.data;
   } catch (error) {
@@ -45,4 +45,9 @@ export const likeBook = async (bookId: number) => {
 export const unLikeBook = async (bookId: number) => {
   const reponse = await httpClient.delete(`/likes/${bookId}`);
   return reponse.data;
+}
+
+export const fetchBestBooks = async () => {
+  const response = await httpClient.get<Book[]>(`/books/best`);
+  return response.data;
 }
